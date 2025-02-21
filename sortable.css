@@ -1,0 +1,82 @@
+:root {
+    --background: hsl(0, 0%, 12%);
+    --text: hsl(0, 0%, 80%);
+    --clear: hsl(0, 0%, 65%);
+    --disabled: hsl(0, 0%, 35%);
+    --purple: #bb73e6;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto Mono', monospace;
+    letter-spacing: 1px;
+    color: var(--text);
+    background: var(--background);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+    width: 100vw;
+    font-size: 0.8rem;
+    align-items: flex-start;
+}
+
+.options {
+    position: fixed;
+    top: 1rem;
+    display: flex;
+}
+
+.options label,
+.options span {
+  width: 100px;
+}
+
+table {
+    color: var(--text);
+    width: 80vw;
+    border-collapse: collapse;
+    margin-top: 5rem;
+    font-size: 0.5rem;
+}
+
+th {
+    background-color: var(--purple);
+    color: white;
+    padding: 1rem;
+    font-size: 0.6rem;
+    text-align: left;
+    text-transform: uppercase;
+    font-weight: bold;
+    white-space: pre-line;
+}
+
+tbody tr:nth-child(even) {
+    background-color: hsl(0, 0%, 22%);
+}
+
+tbody tr:nth-child(odd) {
+    background-color: hsl(0, 0%, 18%);
+}
+
+tbody td {
+    padding: 1rem;
+    text-align: left;
+    white-space: pre-line;
+}
+
+tbody td img {
+    width: 32px;
+    height: 48px;
+}
+
+tbody tr:hover {
+    color: hsl(51, 100%, 70%);
+    background-color: hsl(0, 0%, 30%);
+    cursor: pointer;
+}

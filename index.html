@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>sortable</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link id="fav" rel="shortcut icon" type="image/x-icon" href="data:image/x-icon;,">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="./sortable.css">
+</head>
+
+<body>
+  <script type="module">
+    import { sortable } from './sortable.js'
+
+  // Request the file with fetch, and the data will be downloaded to your browser cache.
+  fetch("https://rawcdn.githack.com/akabab/superhero-api/0.2.0/api/all.json")
+      .then((response) => response.json()) // parse the response from JSON
+      .then(sortable); // .then will call the `loadData` function with the JSON value.
+      
+  </script>
+</body>
+
+</html>

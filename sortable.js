@@ -4,33 +4,13 @@
 // interactive search
 // optimize
 // specify field that search is apply to
-// custom searhc operators
+// custom search operators
 // detail view
 // css
 // url query to determine search conditions
-import { sortTable } from "./sortFunc.js";
-
-const heroTable = document.createElement('table');
-const pwrStatsAbrv = {
-    'intelligence': 'INT',
-    'strength': 'STR',
-    'speed': 'SPD',
-    'durability': 'DUR',
-    'power': 'PWR',
-    'combat': 'COM'
-}
-const headers = [
-    '',
-    'Name',
-    'Full Name',
-    'Powerstats',
-    'Race',
-    'Gender',
-    'Height',
-    'Weight',
-    `Place Of \nBirth`,
-    'Alignment'
-];
+import { 
+    insertHeroTable
+} from "./insertFunc.js";
 
 export function init(heroes){
     heroes[135].appearance.height = ["5'5", "165 cm"]
@@ -44,93 +24,5 @@ export function init(heroes){
         if (weightParam[1] === 'tons') hero.appearance.weight *= 1000;
     });
 
-    const optionDiv = document.createElement('div');
-    optionDiv.className = 'options';
-    document.body.appendChild(optionDiv);
-
-    const selectDiv = document.createElement('div');
-    const selectLabel = document.createElement('label');
-    selectLabel.textContent = 'Show ';
-    selectDiv.appendChild(selectLabel);
-
-    const selectInput = document.createElement('select');
-    const sizeOptions = [10, 20, 50, 100, 'All'];
-    sizeOptions.forEach((size) => {
-        const ele = document.createElement('option');
-        ele.value = size;
-        ele.textContent = `${size} Results`;
-        if (size === 20) ele.selected = true;
-        selectInput.appendChild(ele);
-    });
-    selectDiv.appendChild(selectInput);
-    optionDiv.appendChild(selectDiv);
-
-    insertHeaders(heroes);
-    heroes.forEach((hero) => insertHeroEntries(hero, heroTable));
-
-    document.body.appendChild(heroTable);
+    document.body.appendChild(insertHeroTable(heroes));
 };
-
-
-function insertHeaders(heroes){
-    const headerRow = heroTable.insertRow();
-
-    headers.forEach(headerTitle => {
-        const th = document.createElement('th');
-        th.textContent = headerTitle;
-        headerRow.appendChild(th);
-
-        th.addEventListener('click', ()=>{
-            sortTable(
-                heroes,
-                headerTitle,
-                heroTable,
-                insertHeaders,
-                insertHeroEntries
-            );
-        });
-    });
-}
-
-function insertHeroEntries(hero){
-    const curRow = heroTable.insertRow();
-
-    const iconCell = curRow.insertCell();
-    const img = document.createElement('img');
-    img.src = hero.images.xs;
-    img.alt = hero.name;
-    iconCell.appendChild(img);
-
-    const nameCell = curRow.insertCell();
-    nameCell.textContent = hero.name;
-
-    const fullNameCell = curRow.insertCell();
-    fullNameCell.textContent = hero.biography.fullName;
-
-    const powerStatsCell = curRow.insertCell();
-    let strContainer = '';
-    Object.entries(hero.powerstats).forEach(([key, value]) => {
-        strContainer += `${pwrStatsAbrv[key]}: ${value}\n`;
-    });
-    powerStatsCell.textContent = strContainer;
-
-    const raceCell = curRow.insertCell();
-    raceCell.textContent = hero.appearance.race;
-
-    const genderCell = curRow.insertCell();
-    genderCell.textContent = hero.appearance.gender;
-
-    const heightCell = curRow.insertCell();
-    heightCell.className = 'height'
-    heightCell.textContent = hero.appearance.height;
-
-    const weightCell = curRow.insertCell();
-    weightCell.className = 'weight'
-    weightCell.textContent = hero.appearance.weight;
-
-    const placeOfBirthCell = curRow.insertCell();
-    placeOfBirthCell.textContent = hero.biography.placeOfBirth;
-
-    const alignmentCell = curRow.insertCell();
-    alignmentCell.textContent = hero.biography.alignment;
-}

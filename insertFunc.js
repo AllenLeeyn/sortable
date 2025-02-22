@@ -33,9 +33,10 @@ export function insertHeroTable(heroes){
     optionDiv.appendChild(insertPageSelect(heroes));
     optionDiv.appendChild(insertSearchBar());
 
+    insertHeaders(heroes);
+    heroes.forEach((hero) => insertHeroEntries(hero, heroTable));
+
     document.body.appendChild(heroTable);
-    displayHeroes(heroes);
-    return heroTable;
 };
 
 function insertHeaders(heroes){
@@ -46,20 +47,15 @@ function insertHeaders(heroes){
         th.textContent = headerTitle;
         headerRow.appendChild(th);
 
-        th.addEventListener('click', () => {
-            heroes.sort((a, b) => {
-                let valA = a[headerTitle] || "";
-                let valB = b[headerTitle] || "";
-                
-                // Handle nested properties (e.g., hero.biography.fullName)
-                if (typeof valA === "object") valA = Object.values(valA).join(" ");
-                if (typeof valB === "object") valB = Object.values(valB).join(" ");
-        
-                return valA.localeCompare(valB);
-            });
-        
-            // Redisplay only the sorted & paginated data
-            displayHeroes(heroes);
+        th.addEventListener('click', ()=>{
+            sortTable(
+                heroes,
+                headerTitle,
+                heroTable
+            );
+            document.body.innerHTML = '';
+            heroTable.innerHTML = '';
+            insertHeroTable(heroes)
         });
     });
 }

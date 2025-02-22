@@ -35,12 +35,10 @@ export function insertHeroTable(heroes){
 
     document.body.appendChild(heroTable);
     displayHeroes(heroes);
-    // insertHeaders(heroes);
-    // heroes.forEach((hero) => insertHeroEntries(hero, heroTable));
     return heroTable;
 };
 
-function insertHeaders(){
+function insertHeaders(heroes){
     const headerRow = heroTable.insertRow();
 
     headers.forEach(headerTitle => {
@@ -103,22 +101,6 @@ function displayHeroes(heroes) {
 }
 
 function insertSelect(heroes){
-    // const selectDiv = document.createElement('div');
-    // const selectLabel = document.createElement('label');
-    // selectLabel.textContent = 'Show ';
-    // selectDiv.appendChild(selectLabel);
-
-    // const selectInput = document.createElement('select');
-    // const sizeOptions = [10, 20, 50, 100, 'All'];
-    // sizeOptions.forEach((size) => {
-    //     const ele = document.createElement('option');
-    //     ele.value = size;
-    //     ele.textContent = `${size} Results`;
-    //     if (size === 20) ele.selected = true;
-    //     selectInput.appendChild(ele);
-    // });
-    // selectDiv.appendChild(selectInput);
-    // return selectDiv;
     const selectDiv = document.createElement('div');
     const selectLabel = document.createElement('label');
     selectLabel.textContent = 'Show ';
@@ -145,14 +127,7 @@ function insertSelect(heroes){
     return selectDiv;
 };
 
-function insertPageSelect(){
-    // const pageSelectDiv = document.createElement('div');
-    // pageSelectDiv.className = 'pagination';
-    // const pageButton = document.createElement('a');
-    // pageButton.textContent = 1;
-    // pageButton.className = 'page-button';
-    // pageSelectDiv.appendChild(pageButton);
-    // return pageSelectDiv;
+function insertPageSelect(heroes){
     const pageSelectDiv = document.createElement('div');
     pageSelectDiv.className = 'pagination';
 
@@ -182,14 +157,6 @@ function insertPageSelect(){
 };
 
 function insertSearchBar(){
-    // const searchBarDiv = document.createElement('div');
-    // searchBarDiv.className = 'search-bar';
-    // const searchInput = document.createElement('input');
-    // searchInput.type = 'text';
-    // searchInput.placeholder = 'Search...';
-    // searchInput.classList.add('search-input');
-    // searchBarDiv.appendChild(searchInput);
-    // return searchBarDiv;
     const searchBarDiv = document.createElement('div');
     searchBarDiv.className = 'search-bar';
 

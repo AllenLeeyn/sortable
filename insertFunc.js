@@ -20,20 +20,51 @@ const headers = [
   `Place Of \nBirth`,
   "Alignment",
 ];
-const heroTable = document.createElement("table");
+const heroTable = document.createElement('table');
+let pageSize = 20; //Default page value
+let currentPage = 1;
 
-export function insertHeroTable(heroes) {
-  const optionDiv = document.createElement("div");
-  optionDiv.className = "options";
-  document.body.appendChild(optionDiv);
+export function insertHeroTable(heroes){
+    document.body.innerHTML = '';
+    heroTable.innerHTML = '';
 
-  optionDiv.appendChild(insertSelect());
-  optionDiv.appendChild(insertPageSelect());
-  optionDiv.appendChild(insertSearchBar());
+    const optionDiv = document.createElement('div');
+    optionDiv.className = 'options';
+    document.body.appendChild(optionDiv);
 
-  insertHeaders(heroes);
-  heroes.forEach((hero) => insertHeroEntries(hero, heroTable));
-  return heroTable;
+    optionDiv.appendChild(insertSelect(heroes));
+    optionDiv.appendChild(insertPageSelect(heroes));
+    optionDiv.appendChild(insertSearchBar());
+
+    insertHeaders(heroes);
+
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedHeroes = heroes.slice(startIndex, endIndex);
+
+    paginatedHeroes.forEach(hero => insertHeroEntries(hero));
+
+    document.body.appendChild(heroTable);
+};
+
+function insertHeaders(heroes){
+    const headerRow = heroTable.insertRow();
+
+    headers.forEach(headerTitle => {
+        const th = document.createElement('th');
+        th.textContent = headerTitle;
+        headerRow.appendChild(th);
+
+        th.addEventListener('click', ()=>{
+            sortTable(
+                heroes,
+                headerTitle,
+                heroTable
+            );
+            currentPage = 1;
+            insertHeroTable(heroes)
+        });
+    });
 }
 
 function insertHeaders(heroes) {
@@ -86,34 +117,60 @@ function insertCell(curRow, value, className) {
   if (className !== undefined) cell.className = className;
 }
 
-function insertSelect() {
-  const selectDiv = document.createElement("div");
-  const selectLabel = document.createElement("label");
-  selectLabel.textContent = "Show ";
-  selectDiv.appendChild(selectLabel);
+function insertSelect(heroes){
+    const selectDiv = document.createElement('div');
+    const selectLabel = document.createElement('label');
+    selectLabel.textContent = 'Show ';
+    selectDiv.appendChild(selectLabel);
 
-  const selectInput = document.createElement("select");
-  const sizeOptions = [10, 20, 50, 100, "All"];
-  sizeOptions.forEach((size) => {
-    const ele = document.createElement("option");
-    ele.value = size;
-    ele.textContent = `${size} Results`;
-    if (size === 20) ele.selected = true;
-    selectInput.appendChild(ele);
-  });
-  selectDiv.appendChild(selectInput);
-  return selectDiv;
-}
+    const selectInput = document.createElement('select');
+    const sizeOptions = [10, 20, 50, 100, 'All'];
 
-function insertPageSelect() {
-  const pageSelectDiv = document.createElement("div");
-  pageSelectDiv.className = "pagination";
-  const pageButton = document.createElement("a");
-  pageButton.textContent = 1;
-  pageButton.className = "page-button";
-  pageSelectDiv.appendChild(pageButton);
-  return pageSelectDiv;
-}
+    sizeOptions.forEach((size) => {
+        const ele = document.createElement('option');
+        ele.value = size === 'All' ? heroes.length : size;
+        ele.textContent = `${size} Results`;
+        if (size === pageSize || pageSize === heroes.length) ele.selected = true;
+        selectInput.appendChild(ele);
+    });
+
+    selectInput.addEventListener('change', (event) => {
+        pageSize = parseInt(event.target.value, 10);
+        currentPage = 1; // Reset to first page
+        insertHeroTable(heroes);
+    });
+
+    selectDiv.appendChild(selectInput);
+    return selectDiv;
+};
+
+function insertPageSelect(heroes){
+    const pageSelectDiv = document.createElement('div');
+    pageSelectDiv.className = 'pagination';
+
+    const prevButton = document.createElement('button');
+    prevButton.textContent = 'Previous';
+    prevButton.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            insertHeroTable(heroes);
+        }
+    });
+    pageSelectDiv.appendChild(prevButton);
+
+    const nextButton = document.createElement('button');
+    nextButton.textContent = 'Next';
+    nextButton.addEventListener('click', () => {
+        const totalPages = Math.ceil(heroes.length / pageSize);
+        if (currentPage < totalPages) {
+            currentPage++;
+            insertHeroTable(heroes);
+        }
+    });
+    pageSelectDiv.appendChild(nextButton);
+
+    return pageSelectDiv;
+};
 
 // In your insertFunc.js file, modify the insertSearchBar function:
 

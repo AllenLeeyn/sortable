@@ -24,5 +24,5 @@ export function init(heroes){
         if (weightParam[1] === 'tons') hero.appearance.weight *= 1000;
     });
 
-    document.body.appendChild(insertHeroTable(heroes));
+    insertHeroTable(heroes);
 };

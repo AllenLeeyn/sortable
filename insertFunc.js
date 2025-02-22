@@ -23,10 +23,13 @@ const headers = [
 const heroTable = document.createElement('table');
 let pageSize = 20; //Default page value
 let currentPage = 1;
+let searchStr = '';
+
+const prevButton = document.createElement('a');
+const viewResult = document.createElement('a');
+const nextButton = document.createElement('a');
 
 export function insertHeroTable(heroes){
-    document.body.innerHTML = '';
-    heroTable.innerHTML = '';
 
     const optionDiv = document.createElement('div');
     optionDiv.className = 'options';
@@ -34,57 +37,55 @@ export function insertHeroTable(heroes){
 
     optionDiv.appendChild(insertSelect(heroes));
     optionDiv.appendChild(insertPageSelect(heroes));
-    optionDiv.appendChild(insertSearchBar());
+    optionDiv.appendChild(insertSearchBar(heroes));
+    updateHeroTable(heroes)
+    document.body.appendChild(heroTable);
+};
 
+function updateHeroTable(heroes){
+    heroTable.innerHTML = '';
     insertHeaders(heroes);
+    const selectedHeroes = [];
+
+    heroes.forEach((hero)=>{
+        const name = hero.name.toLowerCase();
+        const fullName = hero.biography.fullName.toLowerCase();
+        
+        if (name.includes(searchStr) || fullName.includes(searchStr)) {
+            selectedHeroes.push(hero);
+        }
+    });
+    
+    if (currentPage <= 1){
+        currentPage = 1;
+        prevButton.style.display = 'none';
+    } else prevButton.style.display = '';
+    const totalPages = Math.ceil(selectedHeroes.length / pageSize);
+    if (currentPage >= totalPages){
+        currentPage = totalPages;
+        nextButton.style.display = 'none';
+    } else nextButton.style.display = '';
 
     const startIndex = (currentPage - 1) * pageSize;
     const endIndex = startIndex + pageSize;
-    const paginatedHeroes = heroes.slice(startIndex, endIndex);
-
+    viewResult.textContent = '[' + String(startIndex) + ' - ' + String(endIndex) + ']';
+    const paginatedHeroes = selectedHeroes.slice(startIndex, endIndex);
     paginatedHeroes.forEach(hero => insertHeroEntries(hero));
-
-    document.body.appendChild(heroTable);
 };
 
 function insertHeaders(heroes){
     const headerRow = heroTable.insertRow();
-
     headers.forEach(headerTitle => {
         const th = document.createElement('th');
         th.textContent = headerTitle;
         headerRow.appendChild(th);
 
         th.addEventListener('click', ()=>{
-            sortTable(
-                heroes,
-                headerTitle,
-                heroTable
-            );
+            sortTable(heroes, headerTitle, heroTable);
             currentPage = 1;
-            insertHeroTable(heroes)
+            updateHeroTable(heroes)
         });
     });
-}
-
-function insertHeaders(heroes) {
-  const headerRow = heroTable.insertRow();
-
-  headers.forEach((headerTitle) => {
-    const th = document.createElement("th");
-    th.textContent = headerTitle;
-    headerRow.appendChild(th);
-
-    th.addEventListener("click", () => {
-      sortTable(
-        heroes,
-        headerTitle,
-        heroTable,
-        insertHeaders,
-        insertHeroEntries
-      );
-    });
-  });
 }
 
 function insertHeroEntries(hero) {
@@ -137,7 +138,7 @@ function insertSelect(heroes){
     selectInput.addEventListener('change', (event) => {
         pageSize = parseInt(event.target.value, 10);
         currentPage = 1; // Reset to first page
-        insertHeroTable(heroes);
+        updateHeroTable(heroes);
     });
 
     selectDiv.appendChild(selectInput);
@@ -148,24 +149,21 @@ function insertPageSelect(heroes){
     const pageSelectDiv = document.createElement('div');
     pageSelectDiv.className = 'pagination';
 
-    const prevButton = document.createElement('button');
     prevButton.textContent = 'Previous';
+    prevButton.className = 'page-button';
     prevButton.addEventListener('click', () => {
-        if (currentPage > 1) {
             currentPage--;
-            insertHeroTable(heroes);
-        }
+            updateHeroTable(heroes);
     });
     pageSelectDiv.appendChild(prevButton);
 
-    const nextButton = document.createElement('button');
+    pageSelectDiv.appendChild(viewResult);
+
     nextButton.textContent = 'Next';
+    nextButton.className = 'page-button';
     nextButton.addEventListener('click', () => {
-        const totalPages = Math.ceil(heroes.length / pageSize);
-        if (currentPage < totalPages) {
             currentPage++;
-            insertHeroTable(heroes);
-        }
+            updateHeroTable(heroes);
     });
     pageSelectDiv.appendChild(nextButton);
 
@@ -174,7 +172,7 @@ function insertPageSelect(heroes){
 
 // In your insertFunc.js file, modify the insertSearchBar function:
 
-function insertSearchBar() {
+function insertSearchBar(heroes) {
   const searchBarDiv = document.createElement("div");
   searchBarDiv.className = "search-bar";
 
@@ -184,27 +182,10 @@ function insertSearchBar() {
   searchInput.classList.add("search-input");
 
   searchInput.addEventListener("input", function (e) {
-    const searchText = e.target.value.toLowerCase();
-    const rows = heroTable.getElementsByTagName("tr");
-
-    for (let i = 1; i < rows.length; i++) {
-      const row = rows[i];
-      const nameCell = row.cells[1];
-      const fullNameCell = row.cells[2];
-
-      if (nameCell && fullNameCell) {
-        const name = nameCell.textContent.toLowerCase();
-        const fullName = fullNameCell.textContent.toLowerCase();
-
-        if (name.includes(searchText) || fullName.includes(searchText)) {
-          row.style.display = "";
-        } else {
-          row.style.display = "none";
-        }
-      }
-    }
+    currentPage = 1;
+    searchStr = e.target.value.toLowerCase();
+    updateHeroTable(heroes);
   });
-
   searchBarDiv.appendChild(searchInput);
   return searchBarDiv;
 }

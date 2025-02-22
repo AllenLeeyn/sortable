@@ -34,7 +34,12 @@ export function insertHeroTable(heroes){
     optionDiv.appendChild(insertSearchBar());
 
     insertHeaders(heroes);
-    heroes.forEach((hero) => insertHeroEntries(hero, heroTable));
+
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedHeroes = heroes.slice(startIndex, endIndex);
+
+    paginatedHeroes.forEach(hero => insertHeroEntries(hero));
 
     document.body.appendChild(heroTable);
 };
@@ -89,18 +94,6 @@ function insertCell(curRow, value, className){
     cell.textContent = value;
     if (className !== undefined) cell.className = className;
 };
-
-function displayHeroes(heroes) {
-    heroTable.innerHTML = ""; // Clear previous entries
-
-    insertHeaders(heroes);
-
-    const startIndex = (currentPage - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-    const paginatedHeroes = heroes.slice(startIndex, endIndex);
-
-    paginatedHeroes.forEach(hero => insertHeroEntries(hero));
-}
 
 function insertSelect(heroes){
     const selectDiv = document.createElement('div');

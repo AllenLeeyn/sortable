@@ -1,44 +1,44 @@
 :root {
-    --background: hsl(0, 0%, 12%);
-    --text: hsl(0, 0%, 80%);
-    --clear: hsl(0, 0%, 65%);
-    --disabled: hsl(0, 0%, 35%);
-    --purple: #bb73e6;
+  --background: hsl(0, 0%, 12%);
+  --text: hsl(0, 0%, 80%);
+  --clear: hsl(0, 0%, 65%);
+  --disabled: hsl(0, 0%, 35%);
+  --purple: #bb73e6;
 }
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    font-family: 'Roboto Mono', monospace;
-    letter-spacing: 1px;
-    color: var(--text);
-    background: var(--background);
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-content: center;
-    width: 100vw;
-    font-size: 0.8rem;
-    align-items: flex-start;
+  font-family: "Roboto Mono", monospace;
+  letter-spacing: 1px;
+  color: var(--text);
+  background: var(--background);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  width: 100vw;
+  font-size: 0.8rem;
+  align-items: flex-start;
 }
 
 /*----- options -----*/
 .options {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 3rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: var(--background);
-    padding: 10px 20px;
-    z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--background);
+  padding: 10px 20px;
+  z-index: 1000;
 }
 
 .options label,
@@ -48,95 +48,93 @@ body {
 
 /*----- search-bar -----*/
 .search-bar {
-    background-color: var(--background);
-    min-width: 200px;
-    width: 20vw;
+  margin: 10px 0;
 }
 
 .search-input {
-    width: 80%;
-    border: 1px solid #ddd;
-    outline: none;
+  padding: 8px;
+  width: 200px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
 }
 
 .search-input:focus {
-    border-color: var(--purple);
+  border-color: var(--purple);
 }
 
 /*----- pagination -----*/
 .pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .page-button {
-    background-color: var(--background);
-    cursor: pointer;
-    font-size: 14px;
+  background-color: var(--background);
+  cursor: pointer;
+  font-size: 14px;
 }
 
 .page-button:hover {
-    color: hsl(51, 100%, 70%);
+  color: hsl(51, 100%, 70%);
 }
 
 /*----- table -----*/
 table {
-    color: var(--text);
-    width: 80vw;
-    border-collapse: collapse;
-    margin-top: 3rem;
-    font-size: 0.5rem;
+  color: var(--text);
+  width: 80vw;
+  border-collapse: collapse;
+  margin-top: 3rem;
+  font-size: 0.5rem;
 }
 
 th {
-    position: sticky;
-    top: 3rem;
-    z-index: 1;
-    background-color: var(--purple);
-    color: white;
-    padding: 1rem;
-    font-size: 0.6rem;
-    text-align: left;
-    text-transform: uppercase;
-    font-weight: bold;
-    white-space: pre-line;
+  position: sticky;
+  top: 3rem;
+  z-index: 1;
+  background-color: var(--purple);
+  color: white;
+  padding: 1rem;
+  font-size: 0.6rem;
+  text-align: left;
+  text-transform: uppercase;
+  font-weight: bold;
+  white-space: pre-line;
 }
 
 th:hover {
-    color: hsl(51, 100%, 70%);
+  color: hsl(51, 100%, 70%);
 }
 
 tbody tr:nth-child(even) {
-    background-color: hsl(0, 0%, 22%);
+  background-color: hsl(0, 0%, 22%);
 }
 
 tbody tr:nth-child(odd) {
-    background-color: hsl(0, 0%, 18%);
+  background-color: hsl(0, 0%, 18%);
 }
 
 tbody td {
-    padding: 1rem;
-    text-align: left;
-    white-space: pre-line;
+  padding: 1rem;
+  text-align: left;
+  white-space: pre-line;
 }
 
 tbody td img {
-    width: 32px;
-    height: 48px;
+  width: 32px;
+  height: 48px;
 }
 
 tbody tr:hover {
-    color: hsl(51, 100%, 70%);
-    background-color: hsl(0, 0%, 30%);
-    cursor: pointer;
+  color: hsl(51, 100%, 70%);
+  background-color: hsl(0, 0%, 30%);
+  cursor: pointer;
 }
 
 .height:after {
-    content: " cm";
+  content: " cm";
 }
 
 .weight:after {
-    content: " kg";
+  content: " kg";
 }
-

@@ -33,7 +33,8 @@ export function insertHeroTable(heroes){
 
     insertHeaders(heroes);
     heroes.forEach((hero) => insertHeroEntries(hero, heroTable));
-    return heroTable;
+
+    document.body.appendChild(heroTable);
 };
 
 function insertHeaders(heroes){
@@ -48,10 +49,11 @@ function insertHeaders(heroes){
             sortTable(
                 heroes,
                 headerTitle,
-                heroTable,
-                insertHeaders,
-                insertHeroEntries
+                heroTable
             );
+            document.body.innerHTML = '';
+            heroTable.innerHTML = '';
+            insertHeroTable(heroes)
         });
     });
 }

@@ -4,9 +4,6 @@ let isAscd = true;
 export function sortTable(
     heroes,
     reqCriteria,
-    heroTable,
-    insertHeaders,
-    insertHeroEntries
 ){
     if (sortCriteria === reqCriteria){
         isAscd = !isAscd;
@@ -27,9 +24,6 @@ export function sortTable(
     if (sortCriteria === 'Alignment') sortFunc = sortAlignment;
 
     heroes.sort((a, b) =>sortFunc(a,b,reqOrder));
-    heroTable.innerHTML = '';
-    insertHeaders(heroes);
-    heroes.forEach(insertHeroEntries);
 };
 
 export function sortAB(a,b, reqOrder, invalidCase){

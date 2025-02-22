@@ -25,6 +25,9 @@ let pageSize = 20; //Default page value
 let currentPage = 1;
 
 export function insertHeroTable(heroes){
+    document.body.innerHTML = '';
+    heroTable.innerHTML = '';
+
     const optionDiv = document.createElement('div');
     optionDiv.className = 'options';
     document.body.appendChild(optionDiv);
@@ -58,8 +61,7 @@ function insertHeaders(heroes){
                 headerTitle,
                 heroTable
             );
-            document.body.innerHTML = '';
-            heroTable.innerHTML = '';
+            currentPage = 1;
             insertHeroTable(heroes)
         });
     });
@@ -108,14 +110,14 @@ function insertSelect(heroes){
         const ele = document.createElement('option');
         ele.value = size === 'All' ? heroes.length : size;
         ele.textContent = `${size} Results`;
-        if (size === 20) ele.selected = true;
+        if (size === pageSize || pageSize === heroes.length) ele.selected = true;
         selectInput.appendChild(ele);
     });
 
     selectInput.addEventListener('change', (event) => {
         pageSize = parseInt(event.target.value, 10);
         currentPage = 1; // Reset to first page
-        displayHeroes(heroes);
+        insertHeroTable(heroes);
     });
 
     selectDiv.appendChild(selectInput);
@@ -131,7 +133,7 @@ function insertPageSelect(heroes){
     prevButton.addEventListener('click', () => {
         if (currentPage > 1) {
             currentPage--;
-            displayHeroes(heroes);
+            insertHeroTable(heroes);
         }
     });
     pageSelectDiv.appendChild(prevButton);
@@ -142,7 +144,7 @@ function insertPageSelect(heroes){
         const totalPages = Math.ceil(heroes.length / pageSize);
         if (currentPage < totalPages) {
             currentPage++;
-            displayHeroes(heroes);
+            insertHeroTable(heroes);
         }
     });
     pageSelectDiv.appendChild(nextButton);
@@ -168,7 +170,7 @@ function insertSearchBar(){
             hero.biography.fullName.toLowerCase().includes(searchTerm)
         );
 
-        displayHeroes(results);
+        insertHeroTable(results);
     });
 
     searchBarDiv.appendChild(searchInput);

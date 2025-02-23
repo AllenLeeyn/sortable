@@ -95,28 +95,28 @@ function insertSearchOptions(arrOp, searchParam, parent, heroes){
 }
 
 function insertSearchBar(heroes) {
-  searchBarDiv.className = "search-bar";
+    searchBarDiv.className = "search-bar";
 
-  insertSearchOptions(searchStrOperators, pgParam.searchOp, searchStrOperator, heroes);
-  insertSearchOptions(searchNumOperators, pgParam.searchOp, searchNumOperator, heroes);
+    insertSearchOptions(searchStrOperators, pgParam.searchOp, searchStrOperator, heroes);
+    insertSearchOptions(searchNumOperators, pgParam.searchOp, searchNumOperator, heroes);
 
-  const searchInput = document.createElement("input");
-  searchInput.type = "text";
-  searchInput.placeholder = "Search heroes...";
-  searchInput.classList.add("search-input");
-  searchBarDiv.appendChild(searchInput);
+    const searchInput = document.createElement("input");
+    searchInput.type = "text";
+    searchInput.placeholder = "Search heroes...";
+    searchInput.classList.add("search-input");
+    searchBarDiv.appendChild(searchInput);
 
-  const searchLabel = document.createElement('label');
-  searchLabel.textContent = ' in ';
-  searchBarDiv.appendChild(searchLabel);
+    const searchLabel = document.createElement('label');
+    searchLabel.textContent = ' in ';
+    searchBarDiv.appendChild(searchLabel);
 
-  insertSearchOptions(searchFields, pgParam.searchIn, searchField, heroes);
+    insertSearchOptions(searchFields, pgParam.searchIn, searchField, heroes);
 
-  searchInput.addEventListener("input", function (e) {
-    pgParam.currentPage.val = 1;
-    pgParam.searchStr = e.target.value.toLowerCase();
-    updateHeroTable(heroes, pgParam);
-  });
+    searchInput.addEventListener("input", function (e) {
+        pgParam.currentPage.val = 1;
+        pgParam.searchStr = e.target.value.toLowerCase();
+        updateHeroTable(heroes, pgParam);
+    });
 
-  return searchBarDiv;
+    return searchBarDiv;
 }

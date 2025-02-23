@@ -1,13 +1,4 @@
-// display data in a table. DONE
-// sort table by any column. DONE
-// use a select input to chose page size
-// interactive search
-// optimize
-// specify field that search is apply to
-// custom search operators
-// detail view
-// css
-// url query to determine search conditions
+
 import { 
     insertHeroTable
 } from "./insertFunc.js";

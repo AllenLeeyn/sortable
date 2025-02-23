@@ -65,7 +65,13 @@ export function sortWeight(a, b, reqOrder) {
 };
 
 export function sortPOB(a, b, reqOrder) {
-    return sortAB(a.biography.placeOfBirth, b.biography.placeOfBirth, reqOrder, '-');
+    let valA = a.biography.placeOfBirth || "-";
+    let valB = b.biography.placeOfBirth || "_";
+
+    valA = valA.replace(/[^a-zA-Z- ]/g, '').trim();
+    valB = valB.replace(/[^a-zA-Z- ]/g, '').trim();
+
+    return sortAB(valA, valB, reqOrder, '-');
 };
 
 export function sortAlignment(a, b, reqOrder) {

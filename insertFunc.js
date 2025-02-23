@@ -102,6 +102,7 @@ function insertHeaders(heroes){
 
 function insertHeroEntries(hero) {
   const curRow = heroTable.insertRow();
+  curRow.addEventListener("click", () => showHeroDetails(hero));
 
   const cell = curRow.insertCell();
   const img = document.createElement("img");
@@ -229,4 +230,50 @@ function insertSearchBar(heroes) {
   });
 
   return searchBarDiv;
+}
+function showHeroDetails(hero) {
+  const existingModal = document.querySelector('.modal-overlay');
+  if (existingModal) existingModal.remove();
+
+  const modalOverlay = document.createElement('div');
+  modalOverlay.className = 'modal-overlay';
+
+  const modalContent = document.createElement('div');
+  modalContent.className = 'modal-content';
+
+  const closeButton = document.createElement('button');
+  closeButton.className = 'modal-close';
+  closeButton.textContent = 'x';
+  closeButton.onclick = () => modalOverlay.remove();
+
+  const heroImage = document.createElement('img');
+  heroImage.src = hero.images.lg;
+  heroImage.alt = hero.name;
+  heroImage.className = 'modal-hero-image';
+
+  const heroInfo = document.createElement('div');
+  heroInfo.className = 'modal-hero-info';
+
+  const nameHeader = document.createElement('h2');
+  nameHeader.textContent = hero.name;
+
+  const fullName = document.createElement('p');
+  fullName.textContent = `Full Name: ${hero.biography.fullName || 'Unknown'}`;
+
+  const powerstats = document.createElement('div');
+  powerstats.className = 'modal-powerstats';
+  Object.entries(hero.powerstats).forEach(([stat, value]) => {
+    const statBar = document.createElement('div');
+    statBar.className = 'stat-bar';
+    statBar.innerHTML = `
+    <span>${stat}: ${value}</span>
+    <div class="stat-bar-fill" style="width: ${value}%"></div>
+    `;
+    powerstats.appendChild(statBar);
+  });
+
+  heroInfo.append(nameHeader, fullName, powerstats);
+  modalContent.append(closeButton, heroImage, heroInfo);
+  modalOverlay.appendChild(modalContent);
+  document.body.appendChild(modalOverlay);
 }

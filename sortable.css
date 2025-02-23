@@ -167,3 +167,64 @@ select option {
 select option:hover {
     background-color: hsl(0, 0%, 20%);
 }
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.modal-content {
+  background: var(--background);
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 800px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  display: flex;
+  gap: 2rem;
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+.modal-hero-image {
+  max-height: 400px;
+  object-fit: cover;
+}
+
+.modal-hero-info {
+  flex: 1;
+}
+
+.modal-powerstats {
+  margin-top: 1rem;
+}
+
+.stat-bar {
+  margin: 0.5rem 0;
+}
+
+.stat-bar-fill {
+  background: var(--purple);
+  height: 8px;
+  border-radius: 4px;
+  margin-top: 4px;
+}

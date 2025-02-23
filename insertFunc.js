@@ -241,39 +241,111 @@ function showHeroDetails(hero) {
   const modalContent = document.createElement('div');
   modalContent.className = 'modal-content';
 
+  // Close button
   const closeButton = document.createElement('button');
   closeButton.className = 'modal-close';
-  closeButton.textContent = 'x';
+  closeButton.textContent = '×';
   closeButton.onclick = () => modalOverlay.remove();
+
+  // Left side - Image and Basic Info
+  const leftSection = document.createElement('div');
+  leftSection.className = 'modal-left';
 
   const heroImage = document.createElement('img');
   heroImage.src = hero.images.lg;
   heroImage.alt = hero.name;
   heroImage.className = 'modal-hero-image';
 
-  const heroInfo = document.createElement('div');
-  heroInfo.className = 'modal-hero-info';
-
   const nameHeader = document.createElement('h2');
   nameHeader.textContent = hero.name;
 
-  const fullName = document.createElement('p');
-  fullName.textContent = `Full Name: ${hero.biography.fullName || 'Unknown'}`;
+  leftSection.append(heroImage, nameHeader);
 
-  const powerstats = document.createElement('div');
-  powerstats.className = 'modal-powerstats';
+  // Right side - Details
+  const rightSection = document.createElement('div');
+  rightSection.className = 'modal-right';
+
+  // Powerstats Section
+  const powerstatsSection = createSection('Powerstats');
   Object.entries(hero.powerstats).forEach(([stat, value]) => {
-    const statBar = document.createElement('div');
-    statBar.className = 'stat-bar';
-    statBar.innerHTML = `
-    <span>${stat}: ${value}</span>
-    <div class="stat-bar-fill" style="width: ${value}%"></div>
-    `;
-    powerstats.appendChild(statBar);
+      const statBar = document.createElement('div');
+      statBar.className = 'stat-bar';
+      statBar.innerHTML = `
+          <span>${stat.charAt(0).toUpperCase() + stat.slice(1)}: ${value}</span>
+          <div class="stat-bar-fill" style="width: ${value}%"></div>
+      `;
+      powerstatsSection.appendChild(statBar);
   });
 
-  heroInfo.append(nameHeader, fullName, powerstats);
-  modalContent.append(closeButton, heroImage, heroInfo);
+  // Appearance Section
+  const appearanceSection = createSection('Appearance');
+  const appearanceDetails = {
+      Gender: hero.appearance.gender,
+      Race: hero.appearance.race || 'Unknown',
+      Height: `${hero.appearance.height[1]}`,
+      Weight: `${hero.appearance.weight[1]}`,
+      'Eye Color': hero.appearance.eyeColor,
+      'Hair Color': hero.appearance.hairColor
+  };
+  appendDetails(appearanceSection, appearanceDetails);
+
+  // Biography Section
+  const biographySection = createSection('Biography');
+  const biographyDetails = {
+      'Full Name': hero.biography.fullName || 'Unknown',
+      'Alter Egos': hero.biography.alterEgos,
+      Aliases: hero.biography.aliases.join(', '),
+      'Place of Birth': hero.biography.placeOfBirth,
+      Alignment: hero.biography.alignment
+  };
+  appendDetails(biographySection, biographyDetails);
+
+  // Work Section
+  const workSection = createSection('Work');
+  const workDetails = {
+      Occupation: hero.work.occupation || 'Unknown',
+      Base: hero.work.base || 'Unknown'
+  };
+  appendDetails(workSection, workDetails);
+
+  // Connections Section
+  const connectionsSection = createSection('Connections');
+  const connectionDetails = {
+      'Group Affiliation': hero.connections.groupAffiliation || 'None',
+      Relatives: hero.connections.relatives || 'None'
+  };
+  appendDetails(connectionsSection, connectionDetails);
+
+  // Append all sections
+  rightSection.append(
+      powerstatsSection,
+      appearanceSection,
+      biographySection,
+      workSection,
+      connectionsSection
+  );
+
+  modalContent.append(closeButton, leftSection, rightSection);
   modalOverlay.appendChild(modalContent);
   document.body.appendChild(modalOverlay);
+}
+
+// Helper function to create sections
+function createSection(title) {
+  const section = document.createElement('div');
+  section.className = 'modal-section';
+  const sectionTitle = document.createElement('h3');
+  sectionTitle.textContent = title;
+  section.appendChild(sectionTitle);
+  return section;
+}
+
+// Helper function to append details to sections
+function appendDetails(section, details) {
+  Object.entries(details).forEach(([key, value]) => {
+      const detail = document.createElement('p');
+      detail.className = 'detail-item';
+      detail.innerHTML = `<span class="detail-label">${key}:</span> ${value}`;
+      section.appendChild(detail);
+  });
 }

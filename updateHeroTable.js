@@ -7,7 +7,7 @@ import {
     prevButton, viewResult, nextButton
 } from "./constants.js";
 
-function insertHeaders(heroes){
+function insertHeaders(heroes, searchIn, searchOp, currentPage, pageSize, searchStr){
     const headerRow = heroTable.insertRow();
     headers.forEach(headerTitle => {
         const th = document.createElement('th');
@@ -16,8 +16,7 @@ function insertHeaders(heroes){
 
         th.addEventListener('click', ()=>{
             sortTable(heroes, headerTitle, heroTable);
-            currentPage = 1;
-            updateHeroTable(heroes, searchIn, searchOp)
+            currentPage.value = 1;updateHeroTable(heroes, searchIn, searchOp, currentPage, pageSize, searchStr)
         });
     });
 }
@@ -55,7 +54,7 @@ function insertHeroEntries(hero) {
 
 export function updateHeroTable(heroes, searchIn, searchOp, currentPage, pageSize, searchStr){
     heroTable.innerHTML = '';
-    insertHeaders(heroes);
+    insertHeaders(heroes, searchIn, searchOp, currentPage, pageSize, searchStr);
     const selectedHeroes = [];
 
     if (searchIn.value === 'Height' || searchIn.value === 'Weight') {
@@ -100,15 +99,15 @@ export function updateHeroTable(heroes, searchIn, searchOp, currentPage, pageSiz
         if (searchOp.value === 'Lesser Than' && curVal < Number(searchStr)) return selectedHeroes.push(hero);
     });
     
-    if (currentPage === 1){
+    if (currentPage.value === 1){
         prevButton.style.display = 'none';
     } else prevButton.style.display = '';
     const totalPages = Math.ceil(selectedHeroes.length / pageSize);
-    if (currentPage === totalPages){
+    if (currentPage.value === totalPages){
         nextButton.style.display = 'none';
     } else nextButton.style.display = '';
 
-    const startIndex = (currentPage - 1) * pageSize;
+    const startIndex = (currentPage.value - 1) * pageSize;
     let endIndex = startIndex + pageSize;
     endIndex = (endIndex > selectedHeroes.length) ? selectedHeroes.length: endIndex;
     viewResult.textContent = '[' + startIndex + ' - ' + endIndex + ' of '+selectedHeroes.length+']';

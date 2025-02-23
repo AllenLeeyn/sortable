@@ -8,7 +8,7 @@ import {
 
 let searchIn = {value:'Name'};
 let searchOp = {value:'Include'};
-let currentPage = 1;
+let currentPage = {value: 1};
 let pageSize = 20; //Default page value
 let searchStr = '';
 
@@ -50,7 +50,7 @@ function insertPageSizeSelect(heroes){
 
     selectInput.addEventListener('change', (event) => {
         pageSize = parseInt(event.target.value, 10);
-        currentPage = 1; // Reset to first page
+        currentPage.value = 1; // Reset to first page
         updateHeroTable(heroes, searchIn, searchOp, currentPage, pageSize, searchStr);
     });
 
@@ -65,7 +65,7 @@ function insertPageNav(heroes){
     prevButton.textContent = 'Previous';
     prevButton.className = 'page-button';
     prevButton.addEventListener('click', () => {
-            currentPage--;
+            currentPage.value--;
             updateHeroTable(heroes, searchIn, searchOp, currentPage, pageSize, searchStr);
     });
     pageNavDiv.appendChild(prevButton);
@@ -75,7 +75,7 @@ function insertPageNav(heroes){
     nextButton.textContent = 'Next';
     nextButton.className = 'page-button';
     nextButton.addEventListener('click', () => {
-            currentPage++;
+            currentPage.value++;
             updateHeroTable(heroes, searchIn, searchOp, currentPage, pageSize, searchStr);
     });
     pageNavDiv.appendChild(nextButton);
@@ -93,7 +93,7 @@ function insertSearchOptions(arrOp, searchParam, parent, heroes){
     });
     parent.addEventListener('change', (event) => {
         searchParam.value = event.target.value;
-        currentPage = 1; // Reset to first page
+        currentPage.value = 1; // Reset to first page
         updateHeroTable(heroes, searchIn, searchOp, currentPage, pageSize, searchStr);
     });
     searchBarDiv.appendChild(parent);
@@ -118,7 +118,7 @@ function insertSearchBar(heroes) {
   insertSearchOptions(searchFields, searchIn, searchField, heroes);
 
   searchInput.addEventListener("input", function (e) {
-    currentPage = 1;
+    currentPage.value = 1;
     searchStr = e.target.value.toLowerCase();
     updateHeroTable(heroes, searchIn, searchOp, currentPage, pageSize, searchStr);
   });

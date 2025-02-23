@@ -16,7 +16,9 @@
   // Request the file with fetch, and the data will be downloaded to your browser cache.
   fetch("https://rawcdn.githack.com/akabab/superhero-api/0.2.0/api/all.json")
       .then((response) => response.json()) // parse the response from JSON
-      .then(init); // .then will call the `loadData` function with the JSON value.
+      .then(init) // .then will call the `loadData` function with the JSON value.
+      .catch((error) => {console.error("Error occurred:", error.message)});
+      // Handle the error thrown by fetch or any part of the promise chain
       
   </script>
 </body>

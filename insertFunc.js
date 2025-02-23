@@ -20,6 +20,16 @@ const headers = [
   `Place Of \nBirth`,
   "Alignment",
 ];
+const searchStrOperators = [
+    "Include",
+    "Exclude",
+];
+const searchNumOperators = [
+    "Equal",
+    "Not Equal",
+    "Greater Than",
+    "Lesser Than",
+];
 const heroTable = document.createElement('table');
 let pageSize = 20; //Default page value
 let currentPage = 1;
@@ -39,69 +49,17 @@ export function insertHeroTable(heroes){
     optionDiv.className = 'options';
     document.body.appendChild(optionDiv);
 
-    optionDiv.appendChild(insertSelect(heroes));
+    optionDiv.appendChild(insertPageSizeSelect(heroes));
     optionDiv.appendChild(insertSearchBar(heroes));
 
     const secOptionDiv = document.createElement('div');
     secOptionDiv.className = 'options';
     secOptionDiv.classList.add('secOptions');
     document.body.appendChild(secOptionDiv);
-    secOptionDiv.appendChild(insertPageSelect(heroes));
+    secOptionDiv.appendChild(insertPageNav(heroes));
 
     updateHeroTable(heroes)
     document.body.appendChild(heroTable);
-};
-
-function updateHeroTable(heroes){
-    heroTable.innerHTML = '';
-    insertHeaders(heroes);
-    const selectedHeroes = [];
-
-    if (searchIn === 'Height' || searchIn === 'Weight') {
-        searchNumOperator.style.display = '';
-        searchStrOperator.style.display = 'none';
-        if (searchOp === 'Include' || searchOp === 'Exclude') searchOp = 'Equal';
-    } else {
-        searchNumOperator.style.display = 'none';
-        searchStrOperator.style.display = '';
-    }
-    heroes.forEach((hero)=>{
-        let curVal = '';
-        if (searchIn === 'Name') curVal = hero.name.toLowerCase();
-        if (searchIn === 'Full Name') curVal = hero.biography.fullName.toLowerCase();
-        if (searchIn === 'Race') curVal = (hero.appearance.race === null) ? curVal = "" : hero.appearance.race.toLowerCase();
-        if (searchIn === 'Gender') curVal = hero.appearance.gender.toLowerCase();
-        if (searchIn === 'Height') curVal = hero.appearance.height;
-        if (searchIn === 'Weight') curVal = hero.appearance.weight;
-        if (searchIn === 'Place Of \nBirth') curVal = hero.biography.placeOfBirth.toLowerCase();
-        if (searchIn === 'Alignment')curVal = hero.biography.alignment.toLowerCase();
-        
-        if (searchOp === 'Include') if (curVal.includes(searchStr)) selectedHeroes.push(hero); 
-        if (searchOp === 'Exclude') if (!curVal.includes(searchStr)) selectedHeroes.push(hero);
-
-        console.log(Number(searchStr));
-        if (searchOp === 'Equal' && curVal === Number(searchStr)) selectedHeroes.push(hero); 
-        if (searchOp === 'Not Equal' && curVal !== Number(searchStr)) selectedHeroes.push(hero);
-        if (searchOp === 'Greater Than' && curVal > Number(searchStr)) selectedHeroes.push(hero); 
-        if (searchOp === 'Lesser Than' && curVal < Number(searchStr)) selectedHeroes.push(hero);
-    });
-    
-    if (currentPage <= 1){
-        currentPage = 1;
-        prevButton.style.display = 'none';
-    } else prevButton.style.display = '';
-    const totalPages = Math.ceil(selectedHeroes.length / pageSize);
-    if (currentPage >= totalPages){
-        currentPage = totalPages;
-        nextButton.style.display = 'none';
-    } else nextButton.style.display = '';
-
-    const startIndex = (currentPage - 1) * pageSize;
-    let endIndex = startIndex + pageSize;
-    endIndex = (endIndex > selectedHeroes.length) ? selectedHeroes.length: endIndex;
-    viewResult.textContent = '[' + startIndex + ' - ' + endIndex + ' of '+selectedHeroes.length+']';
-    const paginatedHeroes = selectedHeroes.slice(startIndex, endIndex);
-    paginatedHeroes.forEach(hero => insertHeroEntries(hero));
 };
 
 function insertHeaders(heroes){
@@ -149,7 +107,7 @@ function insertCell(curRow, value, className) {
   if (className !== undefined) cell.className = className;
 }
 
-function insertSelect(heroes){
+function insertPageSizeSelect(heroes){
     const selectDiv = document.createElement('div');
     const selectLabel = document.createElement('label');
     selectLabel.textContent = 'Show ';
@@ -176,9 +134,9 @@ function insertSelect(heroes){
     return selectDiv;
 };
 
-function insertPageSelect(heroes){
-    const pageSelectDiv = document.createElement('div');
-    pageSelectDiv.className = 'pagination';
+function insertPageNav(heroes){
+    const pageNavDiv = document.createElement('div');
+    pageNavDiv.className = 'pagination';
 
     prevButton.textContent = 'Previous';
     prevButton.className = 'page-button';
@@ -186,9 +144,9 @@ function insertPageSelect(heroes){
             currentPage--;
             updateHeroTable(heroes);
     });
-    pageSelectDiv.appendChild(prevButton);
+    pageNavDiv.appendChild(prevButton);
 
-    pageSelectDiv.appendChild(viewResult);
+    pageNavDiv.appendChild(viewResult);
 
     nextButton.textContent = 'Next';
     nextButton.className = 'page-button';
@@ -196,28 +154,24 @@ function insertPageSelect(heroes){
             currentPage++;
             updateHeroTable(heroes);
     });
-    pageSelectDiv.appendChild(nextButton);
+    pageNavDiv.appendChild(nextButton);
 
-    return pageSelectDiv;
+    return pageNavDiv;
 };
 
-// In your insertFunc.js file, modify the insertSearchBar function:
+function insertOptions(op, defVal, parent){
+    const ele = document.createElement('option');
+    ele.value = op;
+    ele.textContent = op;
+    if (op === defVal) ele.selected = true;
+    parent.appendChild(ele);
+}
 
 function insertSearchBar(heroes) {
   const searchBarDiv = document.createElement("div");
   searchBarDiv.className = "search-bar";
 
-  const searchStrOperators = [
-    "Include",
-    "Exclude",
-  ];  
-  searchStrOperators.forEach((op) => {
-      const ele = document.createElement('option');
-      ele.value = op;
-      ele.textContent = op;
-      if (op === searchOp) ele.selected = true;
-      searchStrOperator.appendChild(ele);
-  });
+  searchStrOperators.forEach((op) => insertOptions(op, searchOp, searchStrOperator));
   searchStrOperator.addEventListener('change', (event) => {
     searchOp = event.target.value;
     currentPage = 1; // Reset to first page
@@ -225,18 +179,8 @@ function insertSearchBar(heroes) {
   });
   searchBarDiv.appendChild(searchStrOperator);
 
-  const searchNumOperators = [
-    "Equal",
-    "Not Equal",
-    "Greater Than",
-    "Lesser Than",
-  ];
-  searchNumOperators.forEach((op) => {
-      const ele = document.createElement('option');
-      ele.value = op;
-      ele.textContent = op;
-      searchNumOperator.appendChild(ele);
-  });
+
+  searchNumOperators.forEach((op) => insertOptions(op, searchOp, searchNumOperator));
   searchNumOperator.addEventListener('change', (event) => {
     searchOp = event.target.value;
     currentPage = 1; // Reset to first page
@@ -255,17 +199,8 @@ function insertSearchBar(heroes) {
   searchBarDiv.appendChild(searchLabel);
 
   const searchField = document.createElement('select');
-  const searchHeaders = [
-    "Name",
-    "Full Name",
-    "Race",
-    "Gender",
-    "Height",
-    "Weight",
-    `Place Of \nBirth`,
-    "Alignment",
-  ];
-  searchHeaders.forEach((head) => {
+  headers.forEach((head) => {
+    if (head === 'Powerstats') return;
       const ele = document.createElement('option');
       ele.value = head;
       ele.textContent = head;
@@ -288,3 +223,68 @@ function insertSearchBar(heroes) {
 
   return searchBarDiv;
 }
+
+function updateHeroTable(heroes){
+    heroTable.innerHTML = '';
+    insertHeaders(heroes);
+    const selectedHeroes = [];
+
+    if (searchIn === 'Height' || searchIn === 'Weight') {
+        searchNumOperator.style.display = '';
+        searchStrOperator.style.display = 'none';
+        if (searchOp === 'Include' || searchOp === 'Exclude') {
+            searchOp = 'Equal';
+            searchNumOperator.value = 'Equal';
+        };
+    } else {
+        searchNumOperator.style.display = 'none';
+        searchStrOperator.style.display = '';
+        if (searchOp === 'Equal' || searchOp === 'Not Equal' || searchOp === 'Greater Than' || searchOp === 'Lesser Than') {
+            searchOp = 'Include';
+            searchStrOperator.value = 'Include';
+        };
+    }
+    heroes.forEach((hero)=>{
+        let curVal = hero.name.toLowerCase();
+        if (searchIn === 'Full Name') {
+            curVal = hero.biography.fullName.toLowerCase()
+        } else if (searchIn === 'Race') {
+            curVal = (hero.appearance.race === null) ? curVal = "" : hero.appearance.race.toLowerCase()
+        } else if (searchIn === 'Gender') {
+            curVal = hero.appearance.gender.toLowerCase()
+        } else if (searchIn === 'Height') {
+            curVal = hero.appearance.height
+        } else if (searchIn === 'Weight') {
+            curVal = hero.appearance.weight
+        } else if (searchIn === 'Place Of \nBirth') {
+            curVal = hero.biography.placeOfBirth.toLowerCase()
+        } else if (searchIn === 'Alignment') {
+            curVal = hero.biography.alignment.toLowerCase()
+        };
+        
+        if (searchOp === 'Include' && curVal.includes(searchStr)) return selectedHeroes.push(hero); 
+        if (searchOp === 'Exclude' && !curVal.includes(searchStr)) return selectedHeroes.push(hero);
+
+        if (searchOp === 'Equal' && curVal === Number(searchStr)) return selectedHeroes.push(hero); 
+        if (searchOp === 'Not Equal' && curVal !== Number(searchStr)) return selectedHeroes.push(hero);
+        if (searchOp === 'Greater Than' && curVal > Number(searchStr)) return selectedHeroes.push(hero); 
+        if (searchOp === 'Lesser Than' && curVal < Number(searchStr)) return selectedHeroes.push(hero);
+    });
+    
+    if (currentPage <= 1){
+        currentPage = 1;
+        prevButton.style.display = 'none';
+    } else prevButton.style.display = '';
+    const totalPages = Math.ceil(selectedHeroes.length / pageSize);
+    if (currentPage >= totalPages){
+        currentPage = totalPages;
+        nextButton.style.display = 'none';
+    } else nextButton.style.display = '';
+
+    const startIndex = (currentPage - 1) * pageSize;
+    let endIndex = startIndex + pageSize;
+    endIndex = (endIndex > selectedHeroes.length) ? selectedHeroes.length: endIndex;
+    viewResult.textContent = '[' + startIndex + ' - ' + endIndex + ' of '+selectedHeroes.length+']';
+    const paginatedHeroes = selectedHeroes.slice(startIndex, endIndex);
+    paginatedHeroes.forEach(hero => insertHeroEntries(hero));
+};

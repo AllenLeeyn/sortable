@@ -56,7 +56,7 @@ function insertHeroEntries(hero) {
 export function updateHeroTable(heroes, pgParam){
     heroTable.innerHTML = '';
     insertHeaders(heroes, pgParam);
-    const selectedHeroes = [];
+    let selectedHeroes = [];
 
     if (pgParam.searchIn.val === 'Height' || pgParam.searchIn.val === 'Weight') {
         searchNumOperator.style.display = '';
@@ -73,32 +73,36 @@ export function updateHeroTable(heroes, pgParam){
             searchStrOperator.value = 'Include';
         };
     }
-    heroes.forEach((hero)=>{
-        let curVal = hero.name.toLowerCase();
-        if (pgParam.searchIn.val === 'Full Name') {
-            curVal = hero.biography.fullName.toLowerCase()
-        } else if (pgParam.searchIn.val === 'Race') {
-            curVal = (hero.appearance.race === null) ? curVal = "" : hero.appearance.race.toLowerCase()
-        } else if (pgParam.searchIn.val === 'Gender') {
-            curVal = hero.appearance.gender.toLowerCase()
-        } else if (pgParam.searchIn.val === 'Height') {
-            curVal = hero.appearance.height
-        } else if (pgParam.searchIn.val === 'Weight') {
-            curVal = hero.appearance.weight
-        } else if (pgParam.searchIn.val === 'Place Of \nBirth') {
-            curVal = hero.biography.placeOfBirth.toLowerCase()
-        } else if (pgParam.searchIn.val === 'Alignment') {
-            curVal = hero.biography.alignment.toLowerCase()
-        };
-        
-        if (pgParam.searchOp.val === 'Include' && curVal.includes(pgParam.searchStr)) return selectedHeroes.push(hero); 
-        if (pgParam.searchOp.val === 'Exclude' && !curVal.includes(pgParam.searchStr)) return selectedHeroes.push(hero);
-
-        if (pgParam.searchOp.val === 'Equal' && curVal === Number(pgParam.searchStr)) return selectedHeroes.push(hero); 
-        if (pgParam.searchOp.val === 'Not Equal' && curVal !== Number(pgParam.searchStr)) return selectedHeroes.push(hero);
-        if (pgParam.searchOp.val === 'Greater Than' && curVal > Number(pgParam.searchStr)) return selectedHeroes.push(hero); 
-        if (pgParam.searchOp.val === 'Lesser Than' && curVal < Number(pgParam.searchStr)) return selectedHeroes.push(hero);
-    });
+    if (pgParam.searchStr === ''){
+        selectedHeroes = [...heroes];
+    } else {
+        heroes.forEach((hero)=>{
+            let curVal = hero.name.toLowerCase();
+            if (pgParam.searchIn.val === 'Full Name') {
+                curVal = hero.biography.fullName.toLowerCase()
+            } else if (pgParam.searchIn.val === 'Race') {
+                curVal = (hero.appearance.race === null) ? curVal = "" : hero.appearance.race.toLowerCase()
+            } else if (pgParam.searchIn.val === 'Gender') {
+                curVal = hero.appearance.gender.toLowerCase()
+            } else if (pgParam.searchIn.val === 'Height') {
+                curVal = hero.appearance.height
+            } else if (pgParam.searchIn.val === 'Weight') {
+                curVal = hero.appearance.weight
+            } else if (pgParam.searchIn.val === 'Place Of \nBirth') {
+                curVal = hero.biography.placeOfBirth.toLowerCase()
+            } else if (pgParam.searchIn.val === 'Alignment') {
+                curVal = hero.biography.alignment.toLowerCase()
+            };
+            
+            if (pgParam.searchOp.val === 'Include' && curVal.includes(pgParam.searchStr)) return selectedHeroes.push(hero); 
+            if (pgParam.searchOp.val === 'Exclude' && !curVal.includes(pgParam.searchStr)) return selectedHeroes.push(hero);
+    
+            if (pgParam.searchOp.val === 'Equal' && curVal === Number(pgParam.searchStr)) return selectedHeroes.push(hero); 
+            if (pgParam.searchOp.val === 'Not Equal' && curVal !== Number(pgParam.searchStr)) return selectedHeroes.push(hero);
+            if (pgParam.searchOp.val === 'Greater Than' && curVal > Number(pgParam.searchStr)) return selectedHeroes.push(hero); 
+            if (pgParam.searchOp.val === 'Lesser Than' && curVal < Number(pgParam.searchStr)) return selectedHeroes.push(hero);
+        });
+    };
     
     if (pgParam.currentPage.val === 1){
         prevButton.style.display = 'none';

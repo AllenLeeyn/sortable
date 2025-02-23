@@ -25,6 +25,9 @@ let pageSize = 20; //Default page value
 let currentPage = 1;
 let searchStr = '';
 let searchIn = 'Name';
+let searchOp = 'Include';
+const searchStrOperator = document.createElement('select');
+const searchNumOperator = document.createElement('select');
 
 const prevButton = document.createElement('a');
 const viewResult = document.createElement('a');
@@ -38,7 +41,6 @@ export function insertHeroTable(heroes){
 
     optionDiv.appendChild(insertSelect(heroes));
     optionDiv.appendChild(insertSearchBar(heroes));
-
 
     const secOptionDiv = document.createElement('div');
     secOptionDiv.className = 'options';
@@ -55,16 +57,33 @@ function updateHeroTable(heroes){
     insertHeaders(heroes);
     const selectedHeroes = [];
 
+    if (searchIn === 'Height' || searchIn === 'Weight') {
+        searchNumOperator.style.display = '';
+        searchStrOperator.style.display = 'none';
+        if (searchOp === 'Include' || searchOp === 'Exclude') searchOp = 'Equal';
+    } else {
+        searchNumOperator.style.display = 'none';
+        searchStrOperator.style.display = '';
+    }
     heroes.forEach((hero)=>{
         let curVal = '';
         if (searchIn === 'Name') curVal = hero.name.toLowerCase();
         if (searchIn === 'Full Name') curVal = hero.biography.fullName.toLowerCase();
         if (searchIn === 'Race') curVal = (hero.appearance.race === null) ? curVal = "" : hero.appearance.race.toLowerCase();
         if (searchIn === 'Gender') curVal = hero.appearance.gender.toLowerCase();
+        if (searchIn === 'Height') curVal = hero.appearance.height;
+        if (searchIn === 'Weight') curVal = hero.appearance.weight;
         if (searchIn === 'Place Of \nBirth') curVal = hero.biography.placeOfBirth.toLowerCase();
         if (searchIn === 'Alignment')curVal = hero.biography.alignment.toLowerCase();
         
-        if (curVal.includes(searchStr)) selectedHeroes.push(hero);
+        if (searchOp === 'Include') if (curVal.includes(searchStr)) selectedHeroes.push(hero); 
+        if (searchOp === 'Exclude') if (!curVal.includes(searchStr)) selectedHeroes.push(hero);
+
+        console.log(Number(searchStr));
+        if (searchOp === 'Equal' && curVal === Number(searchStr)) selectedHeroes.push(hero); 
+        if (searchOp === 'Not Equal' && curVal !== Number(searchStr)) selectedHeroes.push(hero);
+        if (searchOp === 'Greater Than' && curVal > Number(searchStr)) selectedHeroes.push(hero); 
+        if (searchOp === 'Lesser Than' && curVal < Number(searchStr)) selectedHeroes.push(hero);
     });
     
     if (currentPage <= 1){
@@ -188,6 +207,43 @@ function insertSearchBar(heroes) {
   const searchBarDiv = document.createElement("div");
   searchBarDiv.className = "search-bar";
 
+  const searchStrOperators = [
+    "Include",
+    "Exclude",
+  ];  
+  searchStrOperators.forEach((op) => {
+      const ele = document.createElement('option');
+      ele.value = op;
+      ele.textContent = op;
+      if (op === searchOp) ele.selected = true;
+      searchStrOperator.appendChild(ele);
+  });
+  searchStrOperator.addEventListener('change', (event) => {
+    searchOp = event.target.value;
+    currentPage = 1; // Reset to first page
+    updateHeroTable(heroes);
+  });
+  searchBarDiv.appendChild(searchStrOperator);
+
+  const searchNumOperators = [
+    "Equal",
+    "Not Equal",
+    "Greater Than",
+    "Lesser Than",
+  ];
+  searchNumOperators.forEach((op) => {
+      const ele = document.createElement('option');
+      ele.value = op;
+      ele.textContent = op;
+      searchNumOperator.appendChild(ele);
+  });
+  searchNumOperator.addEventListener('change', (event) => {
+    searchOp = event.target.value;
+    currentPage = 1; // Reset to first page
+    updateHeroTable(heroes);
+  });
+  searchBarDiv.appendChild(searchNumOperator);
+
   const searchInput = document.createElement("input");
   searchInput.type = "text";
   searchInput.placeholder = "Search heroes...";
@@ -204,6 +260,8 @@ function insertSearchBar(heroes) {
     "Full Name",
     "Race",
     "Gender",
+    "Height",
+    "Weight",
     `Place Of \nBirth`,
     "Alignment",
   ];

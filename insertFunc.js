@@ -3,14 +3,9 @@ import {
     searchFields, searchStrOperators, searchNumOperators,
     heroTable,
     searchBarDiv, searchStrOperator, searchNumOperator, searchField,
-    prevButton, viewResult, nextButton
+    prevButton, viewResult, nextButton,
+    pgParam
 } from "./constants.js";
-
-let searchIn = {value:'Name'};
-let searchOp = {value:'Include'};
-let currentPage = {value: 1};
-let pageSize = 20; //Default page value
-let searchStr = '';
 
 export function insertHeroTable(heroes){
 
@@ -27,7 +22,7 @@ export function insertHeroTable(heroes){
     document.body.appendChild(secOptionDiv);
     secOptionDiv.appendChild(insertPageNav(heroes));
 
-    updateHeroTable(heroes, searchIn, searchOp, currentPage, pageSize, searchStr);
+    updateHeroTable(heroes, pgParam);
     document.body.appendChild(heroTable);
 };
 
@@ -44,14 +39,14 @@ function insertPageSizeSelect(heroes){
         const ele = document.createElement('option');
         ele.value = size === 'All' ? heroes.length : size;
         ele.textContent = `${size} Results`;
-        if (size === pageSize || pageSize === heroes.length) ele.selected = true;
+        if (size === pgParam.pageSize || pgParam.pageSize === heroes.length) ele.selected = true;
         selectInput.appendChild(ele);
     });
 
     selectInput.addEventListener('change', (event) => {
-        pageSize = parseInt(event.target.value, 10);
-        currentPage.value = 1; // Reset to first page
-        updateHeroTable(heroes, searchIn, searchOp, currentPage, pageSize, searchStr);
+        pgParam.pageSize = parseInt(event.target.value, 10);
+        pgParam.currentPage.val = 1; // Reset to first page
+        updateHeroTable(heroes, pgParam);
     });
 
     selectDiv.appendChild(selectInput);
@@ -65,8 +60,8 @@ function insertPageNav(heroes){
     prevButton.textContent = 'Previous';
     prevButton.className = 'page-button';
     prevButton.addEventListener('click', () => {
-            currentPage.value--;
-            updateHeroTable(heroes, searchIn, searchOp, currentPage, pageSize, searchStr);
+        pgParam.currentPage.val--;
+        updateHeroTable(heroes, pgParam);
     });
     pageNavDiv.appendChild(prevButton);
 
@@ -75,8 +70,8 @@ function insertPageNav(heroes){
     nextButton.textContent = 'Next';
     nextButton.className = 'page-button';
     nextButton.addEventListener('click', () => {
-            currentPage.value++;
-            updateHeroTable(heroes, searchIn, searchOp, currentPage, pageSize, searchStr);
+        pgParam.currentPage.val++;
+        updateHeroTable(heroes, pgParam);
     });
     pageNavDiv.appendChild(nextButton);
 
@@ -88,13 +83,13 @@ function insertSearchOptions(arrOp, searchParam, parent, heroes){
         const ele = document.createElement('option');
         ele.value = op;
         ele.textContent = op;
-        if (op === searchParam.value) ele.selected = true;
+        if (op === searchParam.val) ele.selected = true;
         parent.appendChild(ele);
     });
     parent.addEventListener('change', (event) => {
-        searchParam.value = event.target.value;
-        currentPage.value = 1; // Reset to first page
-        updateHeroTable(heroes, searchIn, searchOp, currentPage, pageSize, searchStr);
+        searchParam.val = event.target.value;
+        pgParam.currentPage.val = 1; // Reset to first page
+        updateHeroTable(heroes, pgParam);
     });
     searchBarDiv.appendChild(parent);
 }
@@ -102,8 +97,8 @@ function insertSearchOptions(arrOp, searchParam, parent, heroes){
 function insertSearchBar(heroes) {
   searchBarDiv.className = "search-bar";
 
-  insertSearchOptions(searchStrOperators, searchOp, searchStrOperator, heroes);
-  insertSearchOptions(searchNumOperators, searchOp, searchNumOperator, heroes);
+  insertSearchOptions(searchStrOperators, pgParam.searchOp, searchStrOperator, heroes);
+  insertSearchOptions(searchNumOperators, pgParam.searchOp, searchNumOperator, heroes);
 
   const searchInput = document.createElement("input");
   searchInput.type = "text";
@@ -115,12 +110,12 @@ function insertSearchBar(heroes) {
   searchLabel.textContent = ' in ';
   searchBarDiv.appendChild(searchLabel);
 
-  insertSearchOptions(searchFields, searchIn, searchField, heroes);
+  insertSearchOptions(searchFields, pgParam.searchIn, searchField, heroes);
 
   searchInput.addEventListener("input", function (e) {
-    currentPage.value = 1;
-    searchStr = e.target.value.toLowerCase();
-    updateHeroTable(heroes, searchIn, searchOp, currentPage, pageSize, searchStr);
+    pgParam.currentPage.val = 1;
+    pgParam.searchStr = e.target.value.toLowerCase();
+    updateHeroTable(heroes, pgParam);
   });
 
   return searchBarDiv;

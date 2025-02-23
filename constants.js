@@ -1,5 +1,4 @@
 export const searchFields = [
-    "",
     "Name",
     "Full Name",
     "Race",
@@ -53,3 +52,11 @@ export const searchField = document.createElement('select');
 export const prevButton = document.createElement('a');
 export const viewResult = document.createElement('a');
 export const nextButton = document.createElement('a');
+
+export const pgParam = {
+    searchIn: {val: 'Name'},
+    searchOp: {val: 'Include'},
+    currentPage: {val: 1},
+    pageSize: 20,
+    searchStr: ''
+};

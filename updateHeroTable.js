@@ -7,7 +7,7 @@ import {
     prevButton, viewResult, nextButton
 } from "./constants.js";
 
-function insertHeaders(heroes, searchIn, searchOp, currentPage, pageSize, searchStr){
+function insertHeaders(heroes, pgParam){
     const headerRow = heroTable.insertRow();
     headers.forEach(headerTitle => {
         const th = document.createElement('th');
@@ -16,7 +16,8 @@ function insertHeaders(heroes, searchIn, searchOp, currentPage, pageSize, search
 
         th.addEventListener('click', ()=>{
             sortTable(heroes, headerTitle, heroTable);
-            currentPage.value = 1;updateHeroTable(heroes, searchIn, searchOp, currentPage, pageSize, searchStr)
+            pgParam.currentPage.val = 1;
+            updateHeroTable(heroes, pgParam)
         });
     });
 }
@@ -52,63 +53,63 @@ function insertHeroEntries(hero) {
   insertCell(curRow, hero.biography.alignment);
 }
 
-export function updateHeroTable(heroes, searchIn, searchOp, currentPage, pageSize, searchStr){
+export function updateHeroTable(heroes, pgParam){
     heroTable.innerHTML = '';
-    insertHeaders(heroes, searchIn, searchOp, currentPage, pageSize, searchStr);
+    insertHeaders(heroes, pgParam);
     const selectedHeroes = [];
 
-    if (searchIn.value === 'Height' || searchIn.value === 'Weight') {
+    if (pgParam.searchIn.val === 'Height' || pgParam.searchIn.val === 'Weight') {
         searchNumOperator.style.display = '';
         searchStrOperator.style.display = 'none';
-        if (searchOp.value === 'Include' || searchOp.value === 'Exclude') {
-            searchOp.value = 'Equal';
+        if (pgParam.searchOp.val === 'Include' || pgParam.searchOp.val === 'Exclude') {
+            pgParam.searchOp.val = 'Equal';
             searchNumOperator.value = 'Equal';
         };
     } else {
         searchNumOperator.style.display = 'none';
         searchStrOperator.style.display = '';
-        if (!(searchOp.value === 'Include' || searchOp.value === 'Exclude')) {
-            searchOp.value = 'Include';
+        if (!(pgParam.searchOp.val === 'Include' || pgParam.searchOp.val === 'Exclude')) {
+            pgParam.searchOp.val= 'Include';
             searchStrOperator.value = 'Include';
         };
     }
     heroes.forEach((hero)=>{
         let curVal = hero.name.toLowerCase();
-        if (searchIn.value === 'Full Name') {
+        if (pgParam.searchIn.val === 'Full Name') {
             curVal = hero.biography.fullName.toLowerCase()
-        } else if (searchIn.value === 'Race') {
+        } else if (pgParam.searchIn.val === 'Race') {
             curVal = (hero.appearance.race === null) ? curVal = "" : hero.appearance.race.toLowerCase()
-        } else if (searchIn.value === 'Gender') {
+        } else if (pgParam.searchIn.val === 'Gender') {
             curVal = hero.appearance.gender.toLowerCase()
-        } else if (searchIn.value === 'Height') {
+        } else if (pgParam.searchIn.val === 'Height') {
             curVal = hero.appearance.height
-        } else if (searchIn.value === 'Weight') {
+        } else if (pgParam.searchIn.val === 'Weight') {
             curVal = hero.appearance.weight
-        } else if (searchIn.value === 'Place Of \nBirth') {
+        } else if (pgParam.searchIn.val === 'Place Of \nBirth') {
             curVal = hero.biography.placeOfBirth.toLowerCase()
-        } else if (searchIn.value === 'Alignment') {
+        } else if (pgParam.searchIn.val === 'Alignment') {
             curVal = hero.biography.alignment.toLowerCase()
         };
         
-        if (searchOp.value === 'Include' && curVal.includes(searchStr)) return selectedHeroes.push(hero); 
-        if (searchOp.value === 'Exclude' && !curVal.includes(searchStr)) return selectedHeroes.push(hero);
+        if (pgParam.searchOp.val === 'Include' && curVal.includes(pgParam.searchStr)) return selectedHeroes.push(hero); 
+        if (pgParam.searchOp.val === 'Exclude' && !curVal.includes(pgParam.searchStr)) return selectedHeroes.push(hero);
 
-        if (searchOp.value === 'Equal' && curVal === Number(searchStr)) return selectedHeroes.push(hero); 
-        if (searchOp.value === 'Not Equal' && curVal !== Number(searchStr)) return selectedHeroes.push(hero);
-        if (searchOp.value === 'Greater Than' && curVal > Number(searchStr)) return selectedHeroes.push(hero); 
-        if (searchOp.value === 'Lesser Than' && curVal < Number(searchStr)) return selectedHeroes.push(hero);
+        if (pgParam.searchOp.val === 'Equal' && curVal === Number(pgParam.searchStr)) return selectedHeroes.push(hero); 
+        if (pgParam.searchOp.val === 'Not Equal' && curVal !== Number(pgParam.searchStr)) return selectedHeroes.push(hero);
+        if (pgParam.searchOp.val === 'Greater Than' && curVal > Number(pgParam.searchStr)) return selectedHeroes.push(hero); 
+        if (pgParam.searchOp.val === 'Lesser Than' && curVal < Number(pgParam.searchStr)) return selectedHeroes.push(hero);
     });
     
-    if (currentPage.value === 1){
+    if (pgParam.currentPage.val === 1){
         prevButton.style.display = 'none';
     } else prevButton.style.display = '';
-    const totalPages = Math.ceil(selectedHeroes.length / pageSize);
-    if (currentPage.value === totalPages){
+    const totalPages = Math.ceil(selectedHeroes.length / pgParam.pageSize);
+    if (pgParam.currentPage.val === totalPages){
         nextButton.style.display = 'none';
     } else nextButton.style.display = '';
 
-    const startIndex = (currentPage.value - 1) * pageSize;
-    let endIndex = startIndex + pageSize;
+    const startIndex = (pgParam.currentPage.val - 1) * pgParam.pageSize;
+    let endIndex = startIndex + pgParam.pageSize;
     endIndex = (endIndex > selectedHeroes.length) ? selectedHeroes.length: endIndex;
     viewResult.textContent = '[' + startIndex + ' - ' + endIndex + ' of '+selectedHeroes.length+']';
     const paginatedHeroes = selectedHeroes.slice(startIndex, endIndex);

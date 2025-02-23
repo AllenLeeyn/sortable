@@ -57,11 +57,11 @@ export function sortGender(a, b, reqOrder) {
 };
 
 export function sortHeight(a, b, reqOrder) {
-    return sortAB(a.appearance.height, b.appearance.height, reqOrder, null);
+    return sortAB(a.appearance.height, b.appearance.height, reqOrder, 0);
 };
 
 export function sortWeight(a, b, reqOrder) {
-    return sortAB(a.appearance.weight, b.appearance.weight, reqOrder, null);
+    return sortAB(a.appearance.weight, b.appearance.weight, reqOrder, 0);
 };
 
 export function sortPOB(a, b, reqOrder) {

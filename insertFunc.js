@@ -234,13 +234,12 @@ function showHeroDetails(hero) {
   const modalContent = document.createElement('div');
   modalContent.className = 'modal-content';
 
-  // Close button
   const closeButton = document.createElement('button');
   closeButton.className = 'modal-close';
-  closeButton.textContent = '×';
+  closeButton.textContent = 'x';
   closeButton.onclick = () => modalOverlay.remove();
 
-  // Left side - Image and Basic Info
+
   const leftSection = document.createElement('div');
   leftSection.className = 'modal-left';
 
@@ -254,11 +253,11 @@ function showHeroDetails(hero) {
 
   leftSection.append(heroImage, nameHeader);
 
-  // Right side - Details
+
   const rightSection = document.createElement('div');
   rightSection.className = 'modal-right';
 
-  // Powerstats Section
+
   const powerstatsSection = createSection('Powerstats');
   Object.entries(hero.powerstats).forEach(([stat, value]) => {
       const statBar = document.createElement('div');
@@ -270,13 +269,13 @@ function showHeroDetails(hero) {
       powerstatsSection.appendChild(statBar);
   });
 
-  // Appearance Section
+
   const appearanceSection = createSection('Appearance');
   const appearanceDetails = {
       Gender: hero.appearance.gender,
       Race: hero.appearance.race || 'Unknown',
-      Height: `${hero.appearance.height[1]}`,
-      Weight: `${hero.appearance.weight[1]}`,
+      Height: `${hero.appearance.height} cm`,
+      Weight: `${hero.appearance.weight} kg`,
       'Eye Color': hero.appearance.eyeColor,
       'Hair Color': hero.appearance.hairColor
   };

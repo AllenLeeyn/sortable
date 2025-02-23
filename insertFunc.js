@@ -37,8 +37,15 @@ export function insertHeroTable(heroes){
     document.body.appendChild(optionDiv);
 
     optionDiv.appendChild(insertSelect(heroes));
-    optionDiv.appendChild(insertPageSelect(heroes));
     optionDiv.appendChild(insertSearchBar(heroes));
+
+
+    const secOptionDiv = document.createElement('div');
+    secOptionDiv.className = 'options';
+    secOptionDiv.classList.add('secOptions');
+    document.body.appendChild(secOptionDiv);
+    secOptionDiv.appendChild(insertPageSelect(heroes));
+
     updateHeroTable(heroes)
     document.body.appendChild(heroTable);
 };

@@ -24,6 +24,7 @@ const heroTable = document.createElement('table');
 let pageSize = 20; //Default page value
 let currentPage = 1;
 let searchStr = '';
+let searchIn = 'Name';
 
 const prevButton = document.createElement('a');
 const viewResult = document.createElement('a');
@@ -48,12 +49,15 @@ function updateHeroTable(heroes){
     const selectedHeroes = [];
 
     heroes.forEach((hero)=>{
-        const name = hero.name.toLowerCase();
-        const fullName = hero.biography.fullName.toLowerCase();
+        let curVal = '';
+        if (searchIn === 'Name') curVal = hero.name.toLowerCase();
+        if (searchIn === 'Full Name') curVal = hero.biography.fullName.toLowerCase();
+        if (searchIn === 'Race') curVal = (hero.appearance.race === null) ? curVal = "" : hero.appearance.race.toLowerCase();
+        if (searchIn === 'Gender') curVal = hero.appearance.gender.toLowerCase();
+        if (searchIn === 'Place Of \nBirth') curVal = hero.biography.placeOfBirth.toLowerCase();
+        if (searchIn === 'Alignment')curVal = hero.biography.alignment.toLowerCase();
         
-        if (name.includes(searchStr) || fullName.includes(searchStr)) {
-            selectedHeroes.push(hero);
-        }
+        if (curVal.includes(searchStr)) selectedHeroes.push(hero);
     });
     
     if (currentPage <= 1){
@@ -67,8 +71,9 @@ function updateHeroTable(heroes){
     } else nextButton.style.display = '';
 
     const startIndex = (currentPage - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-    viewResult.textContent = '[' + String(startIndex) + ' - ' + String(endIndex) + ']';
+    let endIndex = startIndex + pageSize;
+    endIndex = (endIndex > selectedHeroes.length) ? selectedHeroes.length: endIndex;
+    viewResult.textContent = '[' + startIndex + ' - ' + endIndex + ' of '+selectedHeroes.length+']';
     const paginatedHeroes = selectedHeroes.slice(startIndex, endIndex);
     paginatedHeroes.forEach(hero => insertHeroEntries(hero));
 };
@@ -180,12 +185,41 @@ function insertSearchBar(heroes) {
   searchInput.type = "text";
   searchInput.placeholder = "Search heroes...";
   searchInput.classList.add("search-input");
+  searchBarDiv.appendChild(searchInput);
+
+  const searchLabel = document.createElement('label');
+  searchLabel.textContent = ' in ';
+  searchBarDiv.appendChild(searchLabel);
+
+  const searchField = document.createElement('select');
+  const searchHeaders = [
+    "Name",
+    "Full Name",
+    "Race",
+    "Gender",
+    `Place Of \nBirth`,
+    "Alignment",
+  ];
+  searchHeaders.forEach((head) => {
+      const ele = document.createElement('option');
+      ele.value = head;
+      ele.textContent = head;
+      if (head === searchIn) ele.selected = true;
+      searchField.appendChild(ele);
+  });
+  searchBarDiv.appendChild(searchField);
+
+  searchField.addEventListener('change', (event) => {
+      searchIn = event.target.value;
+      currentPage = 1; // Reset to first page
+      updateHeroTable(heroes);
+  });
 
   searchInput.addEventListener("input", function (e) {
     currentPage = 1;
     searchStr = e.target.value.toLowerCase();
     updateHeroTable(heroes);
   });
-  searchBarDiv.appendChild(searchInput);
+
   return searchBarDiv;
 }

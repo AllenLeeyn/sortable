@@ -139,3 +139,25 @@ tbody tr:hover {
 .weight:after {
   content: " kg";
 }
+
+/*----- select -----*/
+
+select {
+    background-color: var(--background);
+    color: var(--text);
+    padding: 5px 10px;
+    border-radius: 50px;
+}
+
+select:hover, select:focus {
+    border-color: var(--purple);
+}
+
+select option {
+    background-color: var(--background);
+    color: var(--text);
+}
+
+select option:hover {
+    background-color: hsl(0, 0%, 20%);
+}
